@@ -1,4 +1,5 @@
-const baseUrl = 'http://localhost:3001/anecdotes'
+const apiPort = import.meta.env.MODE === 'test' ? 3002 : 3001
+const baseUrl = `http://localhost:${apiPort}/anecdotes`
 
 const getAll = async () => {
   const response = await fetch(baseUrl)

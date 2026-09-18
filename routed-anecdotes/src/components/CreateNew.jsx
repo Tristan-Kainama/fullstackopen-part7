@@ -4,7 +4,7 @@ import { useAnecdotes } from "../hooks/index"
 
 const CreateNew = () => {
 
-  const { addNew } = useAnecdotes()
+  const { addAnecdote } = useAnecdotes()
 
   const { reset: resetContent, ...content } = useField('text')
   const { reset: resetAuthor, ...author } = useField('text')
@@ -14,7 +14,7 @@ const CreateNew = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    addNew({ 
+    addAnecdote({ 
       content: content.value, 
       author: author.value, 
       info: info.value, 
