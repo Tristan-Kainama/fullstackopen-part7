@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import AddBlogForm from './components/AddBlogForm'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
+import ErrorBoundary from './components/ErrorBoundary'
 
 import {
   BrowserRouter as Router,
@@ -188,18 +189,6 @@ const App = () => {
     marginBottom: 10
   }
 
-  // const visibleBlogs = [...blogs]
-  //   .filter((blog) => {
-  //     const blogUser = blog.user
-
-  //     return (
-  //       blogUser?.username === user.username ||
-  //       blogUser?.id === user.id ||
-  //       blogUser === user.id
-  //     )
-  //   })
-  //   .sort((a, b) => b.likes - a.likes)
-
   const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
 
   return (
@@ -234,21 +223,29 @@ const App = () => {
 
         <Routes>
           <Route path='/blogs/:id' element={
-            <Blog blogs={blogs} users={users} user={user} updateBlog={updateBlog} removeBlog={removeBlog}/>
+            <ErrorBoundary>
+              <Blog blogs={blogs} users={users} user={user} updateBlog={updateBlog} removeBlog={removeBlog}/>
+            </ErrorBoundary>
           }/>
           <Route path='/' element={
-            <BlogList blogs={blogs}/>
+            <ErrorBoundary>
+              <BlogList blogs={blogs}/>
+            </ErrorBoundary>
           }/>
           <Route path='/login' element={
-            <LoginForm 
-            handleLogin={handleLogin}
-            username={username}
-            password={password}
-            setUsername={setUsername}
-            setPassword={setPassword}/>
+            <ErrorBoundary>
+              <LoginForm 
+              handleLogin={handleLogin}
+              username={username}
+              password={password}
+              setUsername={setUsername}
+              setPassword={setPassword}/>
+            </ErrorBoundary>
           }/>
           <Route path='/create' element={
-            <AddBlogForm createBlog={createBlog}/>
+            <ErrorBoundary>
+              <AddBlogForm createBlog={createBlog}/>
+            </ErrorBoundary>
           }/>
         </Routes>
 
