@@ -1,18 +1,21 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
+import { useBlogs } from "../store";
 
-const BlogList = ({ blogs }) => {
-    return (
-        <div>
-            <h2>blogs</h2>
-            <ul>
-            {blogs.map((blog) => (
-                <li key={blog.id}>
-                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-                </li>
-            ))}
-            </ul>
-        </div>
-    )
-}
+const BlogList = () => {
+  const blogs = useBlogs();
 
-export default BlogList
+  return (
+    <div>
+      <h2>blogs</h2>
+      <ul>
+        {blogs.map((blog) => (
+          <li key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default BlogList;

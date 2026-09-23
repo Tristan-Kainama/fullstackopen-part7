@@ -14,10 +14,11 @@ import blogService from "./services/blogs";
 import userService from "./services/users";
 import loginService from "./services/login";
 
-import { useNotificationActions } from "./store";
+import { useNotificationActions, useBlogActions } from "./store";
 
 const App = () => {
   const { setNotification } = useNotificationActions();
+  const { initialize: initializeBlogs, add: addBlog } = useBlogActions();
 
   const [blogs, setBlogs] = useState([]);
   const [users, setUsers] = useState([]);
@@ -26,8 +27,8 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    initializeBlogs();
+  }, [initializeBlogs]);
 
   useEffect(() => {
     userService.getAll().then((users) => setUsers(users));
@@ -97,15 +98,14 @@ const App = () => {
 
   const createBlog = async (newBlog) => {
     try {
-      const createdBlog = await blogService.create({
+      const createdBlog = {
         title: newBlog.title,
         author: newBlog.author,
         url: newBlog.url,
         likes: 0,
-      });
+      };
 
-      const allBlogs = await blogService.getAll();
-      setBlogs(allBlogs);
+      addBlog(createdBlog);
 
       const blogTitle = createdBlog.title || newBlog.title;
       const blogAuthor = createdBlog.author || newBlog.author;
@@ -244,7 +244,6 @@ const App = () => {
             element={
               <ErrorBoundary>
                 <Blog
-                  blogs={blogs}
                   users={users}
                   user={user}
                   updateBlog={updateBlog}
@@ -257,7 +256,7 @@ const App = () => {
             path="/"
             element={
               <ErrorBoundary>
-                <BlogList blogs={blogs} />
+                <BlogList />
               </ErrorBoundary>
             }
           />
