@@ -18,7 +18,17 @@ const useBlogStore = create((set) => ({
     add: async (newBlog) => {
       await blogService.create(newBlog);
       const updatedBlogs = await blogService.getAll();
-      set((state) => ({ blogs: updatedBlogs }));
+      set(() => ({ blogs: updatedBlogs }));
+    },
+    update: async (newBlog, blogId) => {
+      await blogService.update(newBlog, blogId);
+      const updatedBlogs = await blogService.getAll();
+      set(() => ({ blogs: updatedBlogs }));
+    },
+    remove: async (blogId) => {
+      await blogService.remove(blogId);
+      const updatedBlogs = await blogService.getAll();
+      set(() => ({ blogs: updatedBlogs }));
     },
   },
 }));

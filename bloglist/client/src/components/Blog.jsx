@@ -7,17 +7,75 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import { useBlogs } from "../store";
 
-const Blog = ({ users, user, updateBlog, removeBlog }) => {
+import { useBlogs, useBlogActions, useNotificationActions } from "../store";
+import blogService from "../services/blogs";
+
+const Blog = ({ users, user }) => {
   const blogs = useBlogs();
+  const { update, remove } = useBlogActions();
+  const { setNotification } = useNotificationActions();
+
   const navigate = useNavigate();
+
   const curUser = user
     ? users.find((thisUser) => thisUser.username === user.username)
     : null;
 
   const id = useParams().id;
   const blog = blogs.find((blog) => blog.id === id);
+
+  const updateBlog = async (newBlog, blogId) => {
+    if (user === null) {
+      setNotification({ text: "User has to be logged in!", type: "error" });
+
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+      return;
+    }
+
+    try {
+      update(newBlog, blogId);
+    } catch {
+      setNotification({ text: "Failed to update blog!", type: "error" });
+
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+    }
+  };
+
+  const removeBlog = async (blogId) => {
+    if (user === null) {
+      setNotification({ text: "User has to be logged in!", type: "error" });
+
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+      return;
+    }
+
+    try {
+      const blogToDelete = await blogService.getBlog(blogId);
+      remove(blogId);
+
+      setNotification({
+        text: `${blogToDelete.title} by ${blogToDelete.author} blog has been sucessfully removed!`,
+        type: "success",
+      });
+
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+    } catch {
+      setNotification({ text: "Failed to delete blog!", type: "error" });
+
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+    }
+  };
 
   const handleLike = (event) => {
     event.preventDefault();

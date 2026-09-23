@@ -18,9 +18,7 @@ import { useNotificationActions, useBlogActions } from "./store";
 
 const App = () => {
   const { setNotification } = useNotificationActions();
-  const { initialize: initializeBlogs, add: addBlog } = useBlogActions();
-
-  const [blogs, setBlogs] = useState([]);
+  const { initialize: initializeBlogs } = useBlogActions();
   const [users, setUsers] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -96,103 +94,6 @@ const App = () => {
     }, 5000);
   };
 
-  const createBlog = async (newBlog) => {
-    try {
-      const createdBlog = {
-        title: newBlog.title,
-        author: newBlog.author,
-        url: newBlog.url,
-        likes: 0,
-      };
-
-      addBlog(createdBlog);
-
-      const blogTitle = createdBlog.title || newBlog.title;
-      const blogAuthor = createdBlog.author || newBlog.author;
-
-      setNotification({
-        text: `A new blog ${blogTitle} by ${blogAuthor} added!`,
-        type: "success",
-      });
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
-    } catch {
-      setNotification({ text: "Failed to add blog", type: "error" });
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
-    }
-  };
-
-  const updateBlog = async (newBlog, blogId) => {
-    if (user === null) {
-      setNotification({ text: "User has to be logged in!", type: "error" });
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
-      return;
-    }
-
-    try {
-      await blogService.update(
-        {
-          title: newBlog.title,
-          author: newBlog.author,
-          url: newBlog.url,
-          likes: newBlog.likes,
-        },
-        blogId,
-      );
-
-      const allBlogs = await blogService.getAll();
-      setBlogs(allBlogs);
-    } catch {
-      setNotification({ text: "Failed to update blog!", type: "error" });
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
-    }
-  };
-
-  const removeBlog = async (blogId) => {
-    if (user === null) {
-      setNotification({ text: "User has to be logged in!", type: "error" });
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
-      return;
-    }
-
-    try {
-      const blogToDelete = await blogService.getBlog(blogId);
-      await blogService.remove(blogId);
-
-      const allBlogs = await blogService.getAll();
-      setBlogs(allBlogs);
-
-      setNotification({
-        text: `${blogToDelete.title} by ${blogToDelete.author} blog has been sucessfully removed!`,
-        type: "success",
-      });
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
-    } catch {
-      setNotification({ text: "Failed to delete blog!", type: "error" });
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
-    }
-  };
-
   const padding = {
     padding: 5,
   };
@@ -243,12 +144,7 @@ const App = () => {
             path="/blogs/:id"
             element={
               <ErrorBoundary>
-                <Blog
-                  users={users}
-                  user={user}
-                  updateBlog={updateBlog}
-                  removeBlog={removeBlog}
-                />
+                <Blog users={users} user={user} />
               </ErrorBoundary>
             }
           />
@@ -278,7 +174,7 @@ const App = () => {
             path="/create"
             element={
               <ErrorBoundary>
-                <AddBlogForm createBlog={createBlog} />
+                <AddBlogForm />
               </ErrorBoundary>
             }
           />
