@@ -1,0 +1,17 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix client",
+    "start": "cross-env NODE_ENV=production npm start --prefix server"
+  },
+  "author": "Tristan S.M Kainama",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0"
+  }
+}
