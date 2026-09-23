@@ -1,15 +1,21 @@
-import { Alert } from '@mui/material'
+import { Alert } from "@mui/material";
+import { useNotification } from "../store";
 
-const Notification = ({ notification }) => {
+const Notification = () => {
+  const notification = useNotification();
+
   if (notification === null) {
-    return null
+    return null;
   }
 
   return (
-    <Alert style={{ marginTop: 10, marginBottom: 10 }} severity={notification.type}>
+    <Alert
+      style={{ marginTop: 10, marginBottom: 10 }}
+      severity={notification.type}
+    >
       {notification.text}
     </Alert>
-  )
-}
+  );
+};
 
-export default Notification
+export default Notification;
