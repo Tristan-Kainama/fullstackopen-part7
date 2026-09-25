@@ -10,83 +10,40 @@ import ErrorBoundary from "./components/ErrorBoundary";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-import blogService from "./services/blogs";
-import userService from "./services/users";
-import loginService from "./services/login";
-
-import { useNotificationActions, useBlogActions } from "./store";
+import {
+  useNotificationActions,
+  useBlogActions,
+  useUserActions,
+  useUser,
+} from "./store";
 
 const App = () => {
   const { setNotification } = useNotificationActions();
   const { initialize: initializeBlogs } = useBlogActions();
-  const [users, setUsers] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const {
+    initialize: initializeUsers,
+    checkLoggedIn,
+    logout,
+  } = useUserActions();
+
+  const user = useUser();
 
   useEffect(() => {
     initializeBlogs();
   }, [initializeBlogs]);
 
   useEffect(() => {
-    userService.getAll().then((users) => setUsers(users));
-  });
+    initializeUsers();
+  }, [initializeUsers]);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
-
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
-  }, []);
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
-    try {
-      const loggedInUser = await loginService.login({
-        username,
-        password,
-      });
-
-      window.localStorage.setItem(
-        "loggedBlogappUser",
-        JSON.stringify(loggedInUser),
-      );
-
-      blogService.setToken(loggedInUser.token);
-      setUser(loggedInUser);
-      setUsername("");
-      setPassword("");
-      setNotification({
-        text: `Successfully logged in as ${username}!`,
-        type: "success",
-      });
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
-      return true;
-    } catch {
-      setNotification({ text: "Wrong credentials!", type: "error" });
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
-      return false;
-    }
-  };
+    checkLoggedIn();
+  }, [checkLoggedIn]);
 
   const handleLogout = (event) => {
     event.preventDefault();
 
-    window.localStorage.removeItem("loggedBlogappUser");
-    blogService.setToken(null);
-    setUser(null);
-    setUsername("");
-    setPassword("");
+    logout();
 
     setNotification({ text: "Successfully logged out!", type: "success" });
     setTimeout(() => {
@@ -144,7 +101,7 @@ const App = () => {
             path="/blogs/:id"
             element={
               <ErrorBoundary>
-                <Blog users={users} user={user} />
+                <Blog />
               </ErrorBoundary>
             }
           />
@@ -160,13 +117,7 @@ const App = () => {
             path="/login"
             element={
               <ErrorBoundary>
-                <LoginForm
-                  handleLogin={handleLogin}
-                  username={username}
-                  password={password}
-                  setUsername={setUsername}
-                  setPassword={setPassword}
-                />
+                <LoginForm />
               </ErrorBoundary>
             }
           />

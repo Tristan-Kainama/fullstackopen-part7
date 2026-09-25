@@ -8,11 +8,20 @@ import {
   Button,
 } from "@mui/material";
 
-import { useBlogs, useBlogActions, useNotificationActions } from "../store";
+import {
+  useBlogs,
+  useBlogActions,
+  useNotificationActions,
+  useUser,
+  useUsers,
+} from "../store";
 import blogService from "../services/blogs";
 
-const Blog = ({ users, user }) => {
+const Blog = () => {
   const blogs = useBlogs();
+  const user = useUser();
+  const users = useUsers();
+
   const { update, remove } = useBlogActions();
   const { setNotification } = useNotificationActions();
 

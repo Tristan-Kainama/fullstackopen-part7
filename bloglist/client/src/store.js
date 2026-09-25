@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import blogService from "./services/blogs";
+import userService from "./services/users";
+import loginService from "./services/login";
 
 const useNotificationStore = create((set) => ({
   notification: null,
@@ -10,6 +12,11 @@ const useNotificationStore = create((set) => ({
 
 const useBlogStore = create((set) => ({
   blogs: [],
+  newBlog: {
+    title: "",
+    author: "",
+    url: "",
+  },
   actions: {
     initialize: async () => {
       const blogs = await blogService.getAll();
@@ -30,6 +37,60 @@ const useBlogStore = create((set) => ({
       const updatedBlogs = await blogService.getAll();
       set(() => ({ blogs: updatedBlogs }));
     },
+    setNewBlog: (newBlog) =>
+      set((state) => ({
+        newBlog:
+          typeof newBlog === "function" ? newBlog(state.newBlog) : newBlog,
+      })),
+  },
+}));
+
+const useUserStore = create((set) => ({
+  users: [],
+  user: null,
+  username: "",
+  password: "",
+  actions: {
+    initialize: async () => {
+      const users = await userService.getAll();
+      set(() => ({ users }));
+    },
+    setUser: (user) => set(() => ({ user })),
+    checkLoggedIn: async () => {
+      const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+
+      if (loggedUserJSON) {
+        const user = JSON.parse(loggedUserJSON);
+        set(() => ({ user }));
+        blogService.setToken(user.token);
+      }
+    },
+    setUsername: (username) => set(() => ({ username })),
+    setPassword: (password) => set(() => ({ password })),
+    login: async (username, password) => {
+      const loggedInUser = await loginService.login({
+        username,
+        password,
+      });
+
+      window.localStorage.setItem(
+        "loggedBlogappUser",
+        JSON.stringify(loggedInUser),
+      );
+
+      blogService.setToken(loggedInUser.token);
+      set(() => ({ user: loggedInUser }));
+      set(() => ({ username: "" }));
+      set(() => ({ password: "" }));
+    },
+    logout: async () => {
+      window.localStorage.removeItem("loggedBlogappUser");
+      blogService.setToken(null);
+
+      set(() => ({ user: null }));
+      set(() => ({ username: "" }));
+      set(() => ({ password: "" }));
+    },
   },
 }));
 
@@ -39,4 +100,11 @@ export const useNotificationActions = () =>
   useNotificationStore((state) => state.actions);
 
 export const useBlogs = () => useBlogStore((state) => state.blogs);
+export const useNewBlog = () => useBlogStore((state) => state.newBlog);
 export const useBlogActions = () => useBlogStore((state) => state.actions);
+
+export const useUsers = () => useUserStore((state) => state.users);
+export const useUser = () => useUserStore((state) => state.user);
+export const useUsername = () => useUserStore((state) => state.username);
+export const usePassword = () => useUserStore((state) => state.password);
+export const useUserActions = () => useUserStore((state) => state.actions);

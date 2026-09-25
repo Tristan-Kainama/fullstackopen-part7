@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button } from "@mui/material";
-import { useNotificationActions } from "../store";
+import { useNotificationActions, useNewBlog, useBlogActions } from "../store";
 
 const AddBlogForm = () => {
   const { setNotification } = useNotificationActions();
 
-  const [newBlog, setNewBlog] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
+  const newBlog = useNewBlog();
+  const { setNewBlog, add } = useBlogActions();
 
   const navigate = useNavigate();
 
@@ -23,7 +20,7 @@ const AddBlogForm = () => {
         likes: 0,
       };
 
-      addBlog(createdBlog);
+      add(createdBlog);
 
       const blogTitle = createdBlog.title || newBlog.title;
       const blogAuthor = createdBlog.author || newBlog.author;
