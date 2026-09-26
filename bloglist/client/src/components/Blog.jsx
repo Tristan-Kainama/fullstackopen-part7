@@ -122,39 +122,50 @@ const Blog = () => {
   const isOwner = curUser && curUser.id === blog.user.id;
 
   return (
-    <Card id={blog.id}>
-      <CardContent sx={{ pb: 0 }}>
-        <Typography variant="h5" component="div">
-          {blog.title}
-        </Typography>
-        <Typography sx={{ color: "text.secondary", mb: 1 }}>
-          by {blog.author}
-        </Typography>
-        <Typography
-          component="a"
-          href={blog.url}
-          sx={{ mb: 1, display: "block" }}
-        >
-          {blog.url}
-        </Typography>
-        <Typography sx={{ color: "text.secondary" }}>
-          Added by {blog.user.name}
-        </Typography>
-      </CardContent>
-      <CardActions sx={{ pl: 2 }}>
-        <Typography>{blog.likes} likes</Typography>
-        {user ? (
-          <Button onClick={handleLike} variant="outlined">
-            like
-          </Button>
-        ) : null}
-        {isOwner ? (
-          <Button onClick={handleRemove} variant="outlined" color="error">
-            remove
-          </Button>
-        ) : null}
-      </CardActions>
-    </Card>
+    <div>
+      <Card id={blog.id}>
+        <CardContent sx={{ pb: 0 }}>
+          <Typography variant="h5" component="div">
+            {blog.title}
+          </Typography>
+          <Typography sx={{ color: "text.secondary", mb: 1 }}>
+            by {blog.author}
+          </Typography>
+          <Typography
+            component="a"
+            href={blog.url}
+            sx={{ mb: 1, display: "block" }}
+          >
+            {blog.url}
+          </Typography>
+          <Typography sx={{ color: "text.secondary" }}>
+            Added by {blog.user.name}
+          </Typography>
+        </CardContent>
+        <CardActions sx={{ pl: 2 }}>
+          <Typography>{blog.likes} likes</Typography>
+          {user ? (
+            <Button onClick={handleLike} variant="outlined">
+              like
+            </Button>
+          ) : null}
+          {isOwner ? (
+            <Button onClick={handleRemove} variant="outlined" color="error">
+              remove
+            </Button>
+          ) : null}
+        </CardActions>
+      </Card>
+
+      <div>
+        <h2>Comments</h2>
+        <ul>
+          {blog.comments.map((comment) => (
+            <li key={blog.id}>{comment}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 };
 
