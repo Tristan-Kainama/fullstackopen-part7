@@ -7,6 +7,7 @@ import AddBlogForm from "./components/AddBlogForm";
 import LoginForm from "./components/LoginForm";
 import BlogList from "./components/BlogList";
 import Users from "./components/Users";
+import User from "./components/User";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -122,6 +123,14 @@ const App = () => {
             element={
               <ErrorBoundary>
                 <Users />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/users/:id"
+            element={
+              <ErrorBoundary>
+                <User />
               </ErrorBoundary>
             }
           />
