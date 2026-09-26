@@ -6,6 +6,7 @@ import Notification from "./components/Notification";
 import AddBlogForm from "./components/AddBlogForm";
 import LoginForm from "./components/LoginForm";
 import BlogList from "./components/BlogList";
+import Users from "./components/Users";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -72,6 +73,9 @@ const App = () => {
             <Button color="inherit" component={Link} to="/" sx={style}>
               blogs
             </Button>
+            <Button color="inherit" component={Link} to="/users" sx={style}>
+              users
+            </Button>
             {user ? (
               <Button color="inherit" component={Link} to="/create" sx={style}>
                 new blog
@@ -110,6 +114,14 @@ const App = () => {
             element={
               <ErrorBoundary>
                 <BlogList />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ErrorBoundary>
+                <Users />
               </ErrorBoundary>
             }
           />
