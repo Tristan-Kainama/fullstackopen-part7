@@ -17,6 +17,8 @@ import {
 } from "../store";
 import blogService from "../services/blogs";
 
+import AddCommentForm from "./AddCommentForm";
+
 const Blog = () => {
   const blogs = useBlogs();
   const user = useUser();
@@ -159,9 +161,10 @@ const Blog = () => {
 
       <div>
         <h2>Comments</h2>
+        <AddCommentForm blog={blog} />
         <ul>
-          {blog.comments.map((comment) => (
-            <li key={blog.id}>{comment}</li>
+          {blog.comments.map((comment, index) => (
+            <li key={`${blog.id}-${index}`}>{comment}</li>
           ))}
         </ul>
       </div>

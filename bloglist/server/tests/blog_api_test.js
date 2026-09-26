@@ -59,10 +59,10 @@ describe("when there is initially some blogs saved inside", () => {
   });
 
   describe("adding a comment to a blog", () => {
-    test("a comment can be added to an existing blog", async () => {
-      const blogToComment = await Blog.findOne({});
+    test("any authenticated user can comment on a blog", async () => {
+      const blogToComment = await Blog.findById(helper.initialBlogs[0]._id);
       const user = await User.findOne({
-        username: helper.initialUsers[0].username,
+        username: helper.initialUsers[1].username,
       });
       const token = getTokenFor(user);
 

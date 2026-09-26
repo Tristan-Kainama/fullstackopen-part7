@@ -17,6 +17,7 @@ const useBlogStore = create((set) => ({
     author: "",
     url: "",
   },
+  comment: "",
   actions: {
     initialize: async () => {
       const blogs = await blogService.getAll();
@@ -42,6 +43,13 @@ const useBlogStore = create((set) => ({
         newBlog:
           typeof newBlog === "function" ? newBlog(state.newBlog) : newBlog,
       })),
+    addNewComment: async (blogId, comment) => {
+      await blogService.addComment(blogId, comment);
+      const updatedBlogs = await blogService.getAll();
+      set(() => ({ blogs: updatedBlogs }));
+    },
+    setComment: (comment) =>
+      set(() => ({ comment: typeof comment === "string" ? comment : "" })),
   },
 }));
 
@@ -101,6 +109,7 @@ export const useNotificationActions = () =>
 
 export const useBlogs = () => useBlogStore((state) => state.blogs);
 export const useNewBlog = () => useBlogStore((state) => state.newBlog);
+export const useComment = () => useBlogStore((state) => state.comment);
 export const useBlogActions = () => useBlogStore((state) => state.actions);
 
 export const useUsers = () => useUserStore((state) => state.users);
