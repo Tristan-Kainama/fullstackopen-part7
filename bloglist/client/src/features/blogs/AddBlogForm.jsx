@@ -1,6 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { TextField, Button } from "@mui/material";
-import { useNotificationActions, useNewBlog, useBlogActions } from "../store";
+import { Box, TextField, Button, Typography } from "@mui/material";
+import {
+  useNotificationActions,
+  useNewBlog,
+  useBlogActions,
+} from "../../store";
 
 const AddBlogForm = () => {
   const { setNotification } = useNotificationActions();
@@ -59,13 +63,18 @@ const AddBlogForm = () => {
   };
 
   return (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={addBlog}>
+    <Box component="section" className="form-layout">
+      <p className="page-kicker">Contribute</p>
+      <Typography component="h1" className="page-heading">
+        Create a post
+      </Typography>
+      <Box component="form" onSubmit={addBlog} className="form-panel">
         <TextField
           label="title"
           name="title"
           id="title"
+          size="small"
+          fullWidth
           value={newBlog.title}
           onChange={({ target }) =>
             setNewBlog((prev) => ({
@@ -73,15 +82,13 @@ const AddBlogForm = () => {
               [target.name]: target.value,
             }))
           }
-          style={{ marginTop: 10 }}
         />
-
-        <br />
-
         <TextField
           label="author"
           name="author"
           id="author"
+          size="small"
+          fullWidth
           value={newBlog.author}
           onChange={({ target }) =>
             setNewBlog((prev) => ({
@@ -89,15 +96,13 @@ const AddBlogForm = () => {
               [target.name]: target.value,
             }))
           }
-          style={{ marginTop: 10 }}
         />
-
-        <br />
-
         <TextField
           label="url"
           name="url"
           id="url"
+          size="small"
+          fullWidth
           value={newBlog.url}
           onChange={({ target }) =>
             setNewBlog((prev) => ({
@@ -105,16 +110,12 @@ const AddBlogForm = () => {
               [target.name]: target.value,
             }))
           }
-          style={{ marginTop: 10 }}
         />
-
-        <br />
-
-        <Button type="submit" variant="contained" style={{ marginTop: 10 }}>
+        <Button type="submit" variant="contained" sx={{ justifySelf: "start" }}>
           create
         </Button>
-      </form>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

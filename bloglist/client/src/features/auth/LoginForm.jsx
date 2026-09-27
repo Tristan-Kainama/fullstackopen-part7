@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Typography } from "@mui/material";
 import {
   useUsername,
   usePassword,
   useUserActions,
   useNotificationActions,
-} from "../store";
+} from "../../store";
 
 const LoginForm = () => {
   const username = useUsername();
@@ -50,32 +50,34 @@ const LoginForm = () => {
   };
 
   return (
-    <div>
-      <h2>Log in to application</h2>
-      <form onSubmit={submitLogin}>
-        <div>
-          <TextField
-            label="username"
-            value={username}
-            onChange={({ target }) => setUsername(target.value)}
-          />
-
-          <br />
-
-          <TextField
-            label="password"
-            type="password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-            style={{ marginTop: 10 }}
-          />
-        </div>
-
-        <Button type="submit" variant="contained" style={{ marginTop: 10 }}>
+    <Box component="section" className="form-layout" sx={{ maxWidth: 460 }}>
+      <p className="page-kicker">Welcome back</p>
+      <Typography component="h1" className="page-heading">
+        Sign in
+      </Typography>
+      <Box component="form" onSubmit={submitLogin} className="form-panel">
+        <TextField
+          label="username"
+          name="username"
+          size="small"
+          fullWidth
+          value={username}
+          onChange={({ target }) => setUsername(target.value)}
+        />
+        <TextField
+          label="password"
+          name="password"
+          type="password"
+          size="small"
+          fullWidth
+          value={password}
+          onChange={({ target }) => setPassword(target.value)}
+        />
+        <Button type="submit" variant="contained" sx={{ justifySelf: "start" }}>
           login
         </Button>
-      </form>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

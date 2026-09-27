@@ -4,7 +4,7 @@ import {
   useComment,
   useNotificationActions,
   useUser,
-} from "../store";
+} from "../../store";
 
 const AddCommentForm = ({ blog }) => {
   const comment = useComment();
@@ -26,7 +26,7 @@ const AddCommentForm = ({ blog }) => {
         text: "Successfully added comment!",
         type: "success",
       });
-      setTimout(() => setNotification(null), 5000);
+      setTimeout(() => setNotification(null), 5000);
     } catch (error) {
       setNotification({
         text:

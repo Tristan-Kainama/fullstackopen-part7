@@ -1,12 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardActions,
-  CardContent,
-  Typography,
-  Button,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 import {
   useBlogs,
@@ -14,8 +8,8 @@ import {
   useNotificationActions,
   useUser,
   useUsers,
-} from "../store";
-import blogService from "../services/blogs";
+} from "../../store";
+import blogService from "../../services/blogs";
 
 import AddCommentForm from "./AddCommentForm";
 
@@ -124,28 +118,20 @@ const Blog = () => {
   const isOwner = curUser && curUser.id === blog.user.id;
 
   return (
-    <div>
-      <Card id={blog.id}>
-        <CardContent sx={{ pb: 0 }}>
-          <Typography variant="h5" component="div">
-            {blog.title}
+    <Box component="article" className="blog-detail" id={blog.id}>
+      <header className="blog-detail-header">
+        <p className="page-kicker">Filed under stories</p>
+        <Typography component="h1" className="page-heading">
+          {blog.title}
+        </Typography>
+        <p className="blog-detail-byline">
+          Written by <strong>{blog.author}</strong>
+          {blog.user?.name ? ` · Added by ${blog.user.name}` : null}
+        </p>
+        <div className="blog-detail-actions">
+          <Typography className="blog-like-count">
+            {blog.likes} {blog.likes === 1 ? "like" : "likes"}
           </Typography>
-          <Typography sx={{ color: "text.secondary", mb: 1 }}>
-            by {blog.author}
-          </Typography>
-          <Typography
-            component="a"
-            href={blog.url}
-            sx={{ mb: 1, display: "block" }}
-          >
-            {blog.url}
-          </Typography>
-          <Typography sx={{ color: "text.secondary" }}>
-            Added by {blog.user.name}
-          </Typography>
-        </CardContent>
-        <CardActions sx={{ pl: 2 }}>
-          <Typography>{blog.likes} likes</Typography>
           {user ? (
             <Button onClick={handleLike} variant="outlined">
               like
@@ -156,19 +142,36 @@ const Blog = () => {
               remove
             </Button>
           ) : null}
-        </CardActions>
-      </Card>
+        </div>
+      </header>
 
-      <div>
-        <h2>Comments</h2>
+      <Box className="blog-detail-body">
+        <Typography
+          className="blog-url"
+          component="a"
+          href={blog.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {blog.url}
+        </Typography>
+      </Box>
+
+      <section className="blog-comments" aria-labelledby="comments-heading">
+        <div className="blog-comments-heading">
+          <Typography component="h2" id="comments-heading">
+            Comments
+          </Typography>
+          <span className="blog-comments-count">{blog.comments.length}</span>
+        </div>
         <AddCommentForm blog={blog} />
-        <ul>
+        <ul className="comment-list">
           {blog.comments.map((comment, index) => (
             <li key={`${blog.id}-${index}`}>{comment}</li>
           ))}
         </ul>
-      </div>
-    </div>
+      </section>
+    </Box>
   );
 };
 
