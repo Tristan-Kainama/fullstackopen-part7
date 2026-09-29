@@ -2,6 +2,7 @@ import { create } from "zustand";
 import blogService from "./services/blogs";
 import userService from "./services/users";
 import loginService from "./services/login";
+import { getUser, saveUser, removeUser } from "./services/persistentUser";
 
 const useNotificationStore = create((set) => ({
   notification: null,
@@ -12,6 +13,7 @@ const useNotificationStore = create((set) => ({
 
 const useBlogStore = create((set) => ({
   blogs: [],
+  blogsLoaded: false,
   newBlog: {
     title: "",
     author: "",
@@ -21,7 +23,7 @@ const useBlogStore = create((set) => ({
   actions: {
     initialize: async () => {
       const blogs = await blogService.getAll();
-      set(() => ({ blogs }));
+      set(() => ({ blogs, blogsLoaded: true }));
     },
     add: async (newBlog) => {
       await blogService.create(newBlog);
@@ -65,10 +67,9 @@ const useUserStore = create((set) => ({
     },
     setUser: (user) => set(() => ({ user })),
     checkLoggedIn: async () => {
-      const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+      const user = getUser();
 
-      if (loggedUserJSON) {
-        const user = JSON.parse(loggedUserJSON);
+      if (user) {
         set(() => ({ user }));
         blogService.setToken(user.token);
       }
@@ -81,10 +82,7 @@ const useUserStore = create((set) => ({
         password,
       });
 
-      window.localStorage.setItem(
-        "loggedBlogappUser",
-        JSON.stringify(loggedInUser),
-      );
+      saveUser(loggedInUser);
 
       blogService.setToken(loggedInUser.token);
       set(() => ({ user: loggedInUser }));
@@ -92,7 +90,7 @@ const useUserStore = create((set) => ({
       set(() => ({ password: "" }));
     },
     logout: async () => {
-      window.localStorage.removeItem("loggedBlogappUser");
+      removeUser();
       blogService.setToken(null);
 
       set(() => ({ user: null }));
@@ -108,6 +106,7 @@ export const useNotificationActions = () =>
   useNotificationStore((state) => state.actions);
 
 export const useBlogs = () => useBlogStore((state) => state.blogs);
+export const useBlogsLoaded = () => useBlogStore((state) => state.blogsLoaded);
 export const useNewBlog = () => useBlogStore((state) => state.newBlog);
 export const useComment = () => useBlogStore((state) => state.comment);
 export const useBlogActions = () => useBlogStore((state) => state.actions);

@@ -9,7 +9,7 @@ const BlogList = () => {
     <Box component="section" sx={{ maxWidth: 820 }}>
       <p className="page-kicker">The collection</p>
       <Typography component="h1" className="page-heading">
-        Recent posts
+        blogs
       </Typography>
       {blogs.length ? (
         <ul className="blog-list">

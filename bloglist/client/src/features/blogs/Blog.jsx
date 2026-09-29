@@ -8,6 +8,7 @@ import {
   useNotificationActions,
   useUser,
   useUsers,
+  useBlogsLoaded,
 } from "../../store";
 import blogService from "../../services/blogs";
 
@@ -15,6 +16,7 @@ import AddCommentForm from "./AddCommentForm";
 
 const Blog = () => {
   const blogs = useBlogs();
+  const blogsLoaded = useBlogsLoaded();
   const user = useUser();
   const users = useUsers();
 
@@ -29,6 +31,14 @@ const Blog = () => {
 
   const id = useParams().id;
   const blog = blogs.find((blog) => blog.id === id);
+
+  if (!blog) {
+    return (
+      <Typography component="p">
+        {blogsLoaded ? "Blog not found." : "Loading blog..."}
+      </Typography>
+    );
+  }
 
   const updateBlog = async (newBlog, blogId) => {
     if (user === null) {
@@ -126,7 +136,7 @@ const Blog = () => {
         </Typography>
         <p className="blog-detail-byline">
           Written by <strong>{blog.author}</strong>
-          {blog.user?.name ? ` · Added by ${blog.user.name}` : null}
+          {blog.user.name ? ` · Added by ${blog.user.name}` : null}
         </p>
         <div className="blog-detail-actions">
           <Typography className="blog-like-count">
