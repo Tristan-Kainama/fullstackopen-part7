@@ -4,10 +4,25 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand(\"ping\").ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      TEST_MONGODB_URI: mongodb://127.0.0.1:27017/bloglist-test
     steps:
       - uses: actions/checkout@v4
 
@@ -15,8 +30,12 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install app dependencies
-        working-directory: bloglist
+      - name: Install server dependencies
+        working-directory: bloglist/server
+        run: npm ci
+
+      - name: Install client dependencies
+        working-directory: bloglist/client
         run: npm ci
 
       - name: Install test dependencies
